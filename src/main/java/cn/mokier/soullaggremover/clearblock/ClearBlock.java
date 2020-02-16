@@ -6,6 +6,7 @@ import com.flowpowered.math.vector.Vector3i;
 import lombok.Getter;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.world.World;
@@ -55,7 +56,18 @@ public class ClearBlock {
                     changeMap.put(blockSnapshot, change);
                 }else {
                     Vector3i vector3i = blockSnapshot.getPosition();
-                    blockWorld.setBlockType(blockSnapshot.getPosition(), BlockTypes.AIR);
+                    BlockType b = blockWorld.getBlock(vector3i).getType();
+                    if(b == BlockTypes.POWERED_REPEATER ||
+                       b == BlockTypes.UNPOWERED_REPEATER ||
+                       b == BlockTypes.REDSTONE_WIRE){
+                        blockWorld.setBlockType(
+                                vector3i.getX(),
+                                vector3i.getY()-1,
+                                vector3i.getZ(),
+                                BlockTypes.AIR);
+                    }else {
+                        blockWorld.setBlockType(vector3i,BlockTypes.AIR);
+                    }
                     changeMap.remove(blockSnapshot);
                     Chat.sendBroadcast("clearBlock.clearBlock", true,
                             "{world}", blockWorld.getName(),
