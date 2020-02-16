@@ -46,7 +46,7 @@ public class ClearItems {
     }
 
     public int clear() {
-        List<Item> clearItems = new ArrayList<>();
+        int itemCount = 0;
 
         for(World world : settingsNode.getWorlds()) {
             for(Entity entity : world.getEntities()) {
@@ -55,8 +55,11 @@ public class ClearItems {
 
                     //检测是否清理特殊物品  &&  检测是否是白名单物品
                     if(isClearBySpecialItems(item) && isClearByWhiteList(item)) {
-                        clearItems.add(item);
-                        entity.remove();
+                        itemCount++;
+                        try{
+                            item.remove();
+                        }
+                        catch (Exception e){}
                     }
 
                     /*//检测是否清理特殊物品
@@ -77,8 +80,8 @@ public class ClearItems {
             }
         }
 
-        Chat.sendBroadcast("clearItems.clearItems", true, "{number}", ""+clearItems.size());
-        return clearItems.size();
+        Chat.sendBroadcast("clearItems.clearItems", true, "{number}", ""+itemCount);
+        return itemCount;
     }
 
     public void stateClearWarning() {
